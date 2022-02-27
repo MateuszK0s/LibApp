@@ -19,15 +19,15 @@ namespace LibApp.Models
                     context.Genre.AddRange(
                         new Genre
                         {
-                            Name = "Novel"
+                            Name = "Fantasy"
                         },
                         new Genre
                         {
-                            Name = "Drama"
+                            Name = "Action"
                         },
                         new Genre
                         {
-                            Name = "Musical"
+                            Name = "Dystopia"
                         }
                     );
                 }
@@ -37,33 +37,33 @@ namespace LibApp.Models
                     context.Books.AddRange(
                         new Book
                         {
-                            Name = "W pustyni i w puszczy",
-                            AuthorName = "Henryk Sienkiewicz",
+                            Name = "Krew elfów",
+                            AuthorName = "Andrzej Sapkowski",
                             GenreId = 1,
                             DateAdded = DateTime.Now,
-                            ReleaseDate = new DateTime(1911, 1, 1),
-                            NumberInStock = 100,
-                            NumberAvailable = 250
+                            ReleaseDate = new DateTime(1994, 1, 1),
+                            NumberInStock = 133,
+                            NumberAvailable = 214
                         },
                         new Book
                         {
-                            Name = "Harry Potter i Kamień Filozoficzny",
+                            Name = "Harry Potter i Czara Ognia",
                             AuthorName = "J.K. Rowling",
                             GenreId = 2,
                             DateAdded = DateTime.Now,
-                            ReleaseDate = new DateTime(2002, 1, 18),
-                            NumberInStock = 500,
-                            NumberAvailable = 1250
+                            ReleaseDate = new DateTime(2005, 11, 25),
+                            NumberInStock = 522,
+                            NumberAvailable = 666
                         },
                         new Book
                         {
-                            Name = "Nowy wspaniały świat",
-                            AuthorName = "Aldous Huxley",
+                            Name = "Rok 1984",
+                            AuthorName = "George Orwell",
                             GenreId = 3,
                             DateAdded = DateTime.Now,
-                            ReleaseDate = new DateTime(1932, 1, 1),
-                            NumberInStock = 50,
-                            NumberAvailable = 150
+                            ReleaseDate = new DateTime(1949, 6, 8),
+                            NumberInStock = 4,
+                            NumberAvailable = 54
                         }
                     );
                 }
@@ -73,24 +73,24 @@ namespace LibApp.Models
                     context.Customers.AddRange(
                         new Customer
                         {
-                            Name = "John Wick",
+                            Name = "Adam Małysz",
                             HasNewsletterSubscribed = false,
                             MembershipTypeId = 1,
-                            Birthdate = new DateTime(1980, 1, 23)
+                            Birthdate = new DateTime(1975, 1, 1)
                         },
                         new Customer
                         {
-                            Name = "Jan Kowalski",
+                            Name = "Jerzy Stuhr",
                             HasNewsletterSubscribed = false,
                             MembershipTypeId = 2,
-                            Birthdate = new DateTime(1995, 1, 23)
+                            Birthdate = new DateTime(1968, 1, 1)
                         },
                         new Customer
                         {
-                            Name = "John Huston",
+                            Name = "Mateusz Kos",
                             HasNewsletterSubscribed = true,
                             MembershipTypeId = 3,
-                            Birthdate = new DateTime(1906, 8, 5)
+                            Birthdate = new DateTime(1999, 4, 28)
                         }
                     );
                 }
