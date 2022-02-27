@@ -38,7 +38,7 @@ namespace LibApp
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddScoped<BookRepository>();
+            services.AddScoped<IBookRepository, BookRepository>();
             services.AddControllersWithViews();
         }
 
