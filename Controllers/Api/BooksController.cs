@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
-using LibApp.Data;
 using LibApp.Dtos;
+using LibApp.Interfaces;
 using LibApp.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace LibApp.Controllers.Api
 {
@@ -16,26 +11,84 @@ namespace LibApp.Controllers.Api
     [ApiController]
     public class BooksController : ControllerBase
     {
-        public BooksController(ApplicationDbContext context, IMapper mapper)
+        private readonly IBookRepository _bookRepository;
+
+        private readonly IMapper _mapper;
+
+        public BooksController(IBookRepository bookRepository, IMapper mapper)
         {
-            _context = context;
+            _bookRepository = bookRepository;
             _mapper = mapper;
         }
+
         [HttpGet]
-        public IEnumerable<BookDto> GetBooks(string query = null) 
+        public IActionResult GetBooks(string query = null)
         {
-            var booksQuery = _context.Books
-                .Where(b => b.NumberAvailable > 0);
+            var booksQuery = _bookRepository.GetAvailableBooksBy(query);
 
-            if (!String.IsNullOrWhiteSpace(query))
-            {
-                booksQuery = booksQuery.Where(b => b.Name.Contains(query));
-            }
-
-            return booksQuery.ToList().Select(_mapper.Map<Book, BookDto>);
+            return Ok(booksQuery.ToList().Select(_mapper.Map<Book, BookDto>));
         }
 
-        private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
+        // POST /api/books/
+        [HttpPost]
+        public IActionResult CreateBook(Book book)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid data.");
+            }
+
+            _bookRepository.AddBook(book);
+            _bookRepository.SaveChanges();
+
+            return Ok(_mapper.Map<BookDto>(book));
+        }
+
+        // GET /api/books/{id}
+        [HttpGet("{id}")]
+        public IActionResult GetBook(int id)
+        {
+            var book = _bookRepository.SingleOrDefault(id);
+
+            if (book == null)
+            {
+                return NotFound("Book not found.");
+            }
+
+            return Ok(_mapper.Map<BookDto>(book));
+        }
+
+        // PUT api/books/{id}
+        [HttpPut("{id}")]
+        public IActionResult UpdateBook(int id, Book book)
+        {
+            var bookInDb = _bookRepository.GetBookById(id);
+
+            if (bookInDb == null)
+            {
+                return NotFound("Book not found.");
+            }
+
+            bookInDb.Name = book.Name;
+            bookInDb.AuthorName = book.AuthorName;
+            bookInDb.GenreId = book.GenreId;
+            bookInDb.ReleaseDate = book.ReleaseDate;
+            bookInDb.NumberInStock = book.NumberInStock;
+            bookInDb.NumberAvailable = book.NumberAvailable;
+
+            _bookRepository.SaveChanges();
+
+            return Ok(_mapper.Map<BookDto>(bookInDb));
+        }
+
+        // DELETE /api/books/{id}
+        [HttpDelete("{id}")]
+        public IActionResult DeleteBook(int id)
+        {
+            _bookRepository.DeleteBookById(id);
+            _bookRepository.SaveChanges();
+
+            return Ok();
+        }
     }
 }

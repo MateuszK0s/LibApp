@@ -1,7 +1,10 @@
 using LibApp.Data;
 using LibApp.Interfaces;
 using LibApp.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LibApp.Repositories
 {
@@ -19,19 +22,24 @@ namespace LibApp.Repositories
             _context.Books.Add(book);
         }
 
-        public void DeleteBook(int bookId)
+        public void DeleteBookById(int bookId)
         {
-            _context.Books.Remove(GetBookById(bookId));
+            var book = GetBookById(bookId);
+
+            if (book != null)
+            {
+                _context.Books.Remove(book);
+            }
         }
 
         public Book GetBookById(int bookId)
         {
-            return _context.Books.Find(1);
+            return _context.Books.Find(bookId);
         }
 
         public IEnumerable<Book> GetBooks()
         {
-            return _context.Books;
+            return _context.Books.Include(b => b.Genre);
         }
 
         public void UpdateBook(Book book)
@@ -39,9 +47,29 @@ namespace LibApp.Repositories
             _context.Books.Update(book);
         }
 
-        public void Save()
+        public void SaveChanges()
         {
             _context.SaveChanges();
+        }
+
+        public Book SingleOrDefault(int bookId)
+        {
+            return _context.Books
+                .Include(b => b.Genre)
+                .SingleOrDefault(b => b.Id == bookId);
+        }
+
+        public IEnumerable<Book> GetAvailableBooksBy(string query)
+        {
+            var booksQuery = _context.Books
+                .Where(b => b.NumberAvailable > 0);
+
+            if (!String.IsNullOrWhiteSpace(query))
+            {
+                booksQuery = booksQuery.Where(b => b.Name.Contains(query));
+            }
+
+            return booksQuery;
         }
     }
 }

@@ -13,6 +13,12 @@ namespace LibApp.Interfaces
 
         void UpdateBook(Book book);
 
-        void DeleteBook(int bookId);
+        void DeleteBookById(int bookId);
+
+        Book SingleOrDefault(int bookId);
+
+        IEnumerable<Book> GetAvailableBooksBy(string query);
+
+        public void SaveChanges();
     }
 }
