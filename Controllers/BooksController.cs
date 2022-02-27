@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using LibApp.Models;
 using LibApp.ViewModels;
 using LibApp.Data;
@@ -50,9 +48,8 @@ namespace LibApp.Controllers
                 return NotFound();
             }
 
-            var viewModel = new BookFormViewModel
+            var viewModel = new BookFormViewModel(book)
             {
-                Book = book,
                 Genres = _context.Genre.ToList()
             };
 
@@ -70,8 +67,15 @@ namespace LibApp.Controllers
             return View("BookForm", viewModel);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Save(Book book)
         {
+            if (!ModelState.IsValid)
+            {
+                return FormViewFor(book);
+            }
+
             if (book.Id == 0)
             {
                 book.DateAdded = DateTime.Now;
@@ -99,6 +103,14 @@ namespace LibApp.Controllers
             return RedirectToAction("Index", "Books");
         }
 
+        protected IActionResult FormViewFor(Book book)
+        {
+            var viewModel = new BookFormViewModel(book)
+            {
+                Genres = _context.Genre.ToList()
+            };
 
+            return View("BookForm", viewModel);
+        }
     }
 }
