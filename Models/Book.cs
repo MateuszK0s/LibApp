@@ -31,6 +31,7 @@ namespace LibApp.Models
 		public DateTime ReleaseDate { get; set; }
 
 		[Required(ErrorMessage = "Number in stock is required.")]
+		[Range(1, 20, ErrorMessage = "Number in stock must be between 1 and 20.")]
 		public int NumberInStock { get; set; }
 
 		[Required(ErrorMessage = "Number available is required.")]
@@ -38,4 +39,4 @@ namespace LibApp.Models
 	}
 }
       
-}
+
