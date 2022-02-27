@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LibApp.Interfaces
 {
-    interface IBookRepository
+    public interface IBookRepository
     {
         IEnumerable<Book> GetBooks();
 
