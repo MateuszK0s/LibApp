@@ -24,9 +24,11 @@ namespace LibApp.Controllers.Api
         [HttpGet]
         public IActionResult GetBooks(string query = null)
         {
-            var booksQuery = _bookRepository.GetAvailableBooksBy(query);
+            var booksDtos = _bookRepository.GetAvailableBooksBy(query)
+                .ToList()
+                .Select(_mapper.Map<Book, BookDto>);
 
-            return Ok(booksQuery.ToList().Select(_mapper.Map<Book, BookDto>));
+            return Ok(booksDtos);
         }
 
         // POST /api/books/
