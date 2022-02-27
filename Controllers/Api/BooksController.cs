@@ -2,6 +2,7 @@
 using LibApp.Dtos;
 using LibApp.Interfaces;
 using LibApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
@@ -33,6 +34,7 @@ namespace LibApp.Controllers.Api
 
         // POST /api/books/
         [HttpPost]
+        [Authorize(Roles = "StoreManager,Owner")]
         public IActionResult CreateBook(Book book)
         {
             if (!ModelState.IsValid)
@@ -62,6 +64,7 @@ namespace LibApp.Controllers.Api
 
         // PUT api/books/{id}
         [HttpPut("{id}")]
+        [Authorize(Roles = "StoreManager,Owner")]
         public IActionResult UpdateBook(int id, Book book)
         {
             var bookInDb = _bookRepository.GetBookById(id);
@@ -85,6 +88,7 @@ namespace LibApp.Controllers.Api
 
         // DELETE /api/books/{id}
         [HttpDelete("{id}")]
+        [Authorize(Roles = "StoreManager,Owner")]
         public IActionResult DeleteBook(int id)
         {
             _bookRepository.DeleteBookById(id);
