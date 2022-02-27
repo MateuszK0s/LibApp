@@ -15,6 +15,7 @@
     {
         <li>Birthdate: @Model.Birthdate.Value.ToShortDateString()</li>
     }
+    <li>@Model.HasNewsletterSubscribed</li>
 </ul>
 
 @if (User.IsInRole("Administrator"))
