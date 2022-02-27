@@ -62,6 +62,7 @@ namespace LibApp.Repositories
         public IEnumerable<Book> GetAvailableBooksBy(string query)
         {
             var booksQuery = _context.Books
+                .Include(b => b.Genre)
                 .Where(b => b.NumberAvailable > 0);
 
             if (!String.IsNullOrWhiteSpace(query))
