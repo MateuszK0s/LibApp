@@ -1,4 +1,6 @@
 using LibApp.Data;
+using LibApp.Interfaces;
+using LibApp.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,8 +14,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LibApp.Interfaces;
-using LibApp.Repositories;
 
 namespace LibApp
 {
@@ -37,14 +37,17 @@ namespace LibApp
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
+
             services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -72,6 +75,26 @@ namespace LibApp
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
+            CreateRoles(serviceProvider);
+        }
+
+        private void CreateRoles(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            string[] roleNames = { "User", "StoreManager", "Owner" };
+
+            foreach (string roleName in roleNames)
+            {
+                Task<bool> hasAdminRole = roleManager.RoleExistsAsync(roleName);
+                hasAdminRole.Wait();
+
+                if (!hasAdminRole.Result)
+                {
+                    roleManager.CreateAsync(new IdentityRole(roleName)).Wait();
+                }
+            }
         }
     }
 }
