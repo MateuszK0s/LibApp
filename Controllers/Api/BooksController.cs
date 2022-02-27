@@ -88,7 +88,7 @@ namespace LibApp.Controllers.Api
             _bookRepository.DeleteBookById(id);
             _bookRepository.SaveChanges();
 
-            return Ok();
+            return NoContent();
         }
     }
 }
